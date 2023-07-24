@@ -15,6 +15,6 @@ namespace DataAccess.Data
 
         }
 
-        public DbSet<NotificationModel> Tbl_Notify { get; set; }
+        public DbSet<NotifyModel> Tbl_Notify { get; set; }
     }
 }

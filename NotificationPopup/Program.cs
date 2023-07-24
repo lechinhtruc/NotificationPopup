@@ -1,4 +1,7 @@
 using DataAccess.Data;
+using DataAccess.Interfaces;
+using DataAccess.Repositories;
+using DataAccess.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +11,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DbConnection")
 ));
+builder.Services.AddScoped<INotifyRepository, NotifyRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
@@ -21,6 +28,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Notification API v1");
+});
 
 app.UseRouting();
 

@@ -1,6 +1,5 @@
-﻿using DataAccess.Models;
-using DataAccess.UnitOfWork;
-using Microsoft.AspNetCore.Http;
+﻿using DataAccess.Interfaces;
+using DataAccess.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NotificationPopup.Controllers
@@ -9,14 +8,15 @@ namespace NotificationPopup.Controllers
     [ApiController]
     public class NotifyController : ControllerBase
     {
-        private readonly UnitOfWork _unitOfWork;
-        public NotifyController(UnitOfWork unitOfWork)
+        private readonly IUnitOfWork _unitOfWork;
+        public NotifyController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
-        public Task<IEnumerable<NotificationModel>> GetAll()
+        [Route("GetAll")]
+        public Task<IEnumerable<NotifyModel>> GetAll()
         {
             return _unitOfWork.Notify.GetAllNotification();
         }
@@ -26,6 +26,20 @@ namespace NotificationPopup.Controllers
         public Task<int> CountUnreadNotify()
         {
             return _unitOfWork.Notify.CountUnredNotification();
+        }
+
+        [HttpPut]
+        [Route("ReadNotify")]
+        public Task ReadNotification()
+        {
+            return _unitOfWork.Notify.ReadNotification();
+        }
+
+        [HttpPost]
+        [Route("AddNotify")]
+        public Task<NotifyModel> AddNotify(NotifyModel notify)
+        {
+            return _unitOfWork.Notify.CreateNotification(notify);
         }
     }
 }

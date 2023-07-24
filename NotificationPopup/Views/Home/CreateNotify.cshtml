@@ -1,0 +1,33 @@
+﻿@model DataAccess.Models.NotifyModel
+
+<div class="d-flex flex-column w-100 h-full justify-content-center mt-5">
+    <h3>Tạo thông báo</h3>
+    <form class="mt-2" id="add-notify-form">
+        <div class="mb-3">
+            <label for="notify-msg" class="form-label">Nội dung</label>
+            <input type="text" class="form-control" id="notify-msg" asp-for="Msg">
+            <span asp-validation-for="Msg" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="type-select" class="form-label">Kiểu thông báo</label>
+            <select class="form-select" id="type-select" asp-for="Type">
+                <option selected value="">Chọn kiểu thông báo</option>
+                <option value="Alarm">Nhắc nhở</option>
+                <option value="Danger">Cảnh báo</option>
+            </select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="end-date" class="form-label">Thời gian hiện thông báo</label>
+            <input type="datetime-local" class="form-control" id="end-date" asp-for="End_date">
+            <span asp-validation-for="End_date" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary" id="btn-create-notify">Tạo mới</button>
+    </form>
+</div>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

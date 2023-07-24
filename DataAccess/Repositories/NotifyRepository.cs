@@ -2,11 +2,6 @@
 using DataAccess.Interfaces;
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
@@ -22,12 +17,34 @@ namespace DataAccess.Repositories
 
         public async Task<int> CountUnredNotification()
         {
-            return await _db.Tbl_Notify.CountAsync(x => x.IsRead == false && x.End_date < DateTime.Now);
+            return await _db.Tbl_Notify.CountAsync(x => x.IsRead == false && x.End_date <= DateTime.Now);
         }
 
-        public async Task<IEnumerable<NotificationModel>> GetAllNotification()
+        public async Task<NotifyModel> CreateNotification(NotifyModel notify)
         {
-            return await _db.Tbl_Notify.Where(x => x.End_date < DateTime.Now).ToListAsync();
+            NotifyModel notifi = new()
+            {
+                Msg = notify.Msg,
+                Type = notify.Type,
+                Created_date = DateTime.Now,
+                End_date = notify.End_date,
+                IsRead = false
+            };
+            await _db.Tbl_Notify.AddAsync(notifi);
+            await _db.SaveChangesAsync();
+            return notifi;
+        }
+
+        public async Task<IEnumerable<NotifyModel>> GetAllNotification()
+        {
+            return await _db.Tbl_Notify.Where(x => x.End_date <= DateTime.Now).OrderByDescending(x => x.Created_date).ToListAsync();
+        }
+
+        public async Task ReadNotification()
+        {
+            var notify = await _db.Tbl_Notify.Where(x => x.IsRead == false).ToListAsync();
+            notify.ForEach(m => m.IsRead = true);
+            await _db.SaveChangesAsync();
         }
     }
 }
